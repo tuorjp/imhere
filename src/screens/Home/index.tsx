@@ -1,4 +1,4 @@
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { styles } from './styles'
 import { Participant } from "../../components/Participant"
 
@@ -42,19 +42,24 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView>
-        {
-          participants.map((e, i) => {
-            return (
-              <Participant 
-                key={i} 
-                name={e} 
-                onRemove={() => handleParticipantRemove(e)}
-              />
-            )
-          })
-        }
-      </ScrollView>
+      {/*FlatList é mais performático que a renderização por map normal*/}
+      <FlatList 
+        data={participants}
+        keyExtractor={item => item}
+        renderItem={({ item }) => (
+          <Participant 
+            key={item} 
+            name={item} 
+            onRemove={() => handleParticipantRemove(item)}
+          />
+        )}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <Text style={styles.listEmptyText}>
+            Nenhum usuário adicionado
+          </Text>
+        )}
+      />
     </View>
   )
 }
